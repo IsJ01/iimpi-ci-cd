@@ -1,0 +1,40 @@
+name: Calculator CI Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with: 
+          java-version: '26'
+          distribution: 'temurin' 
+
+      - name: Setup Gradle (с кэшем)
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build & test
+        run: ./gradlew clean build
+
+      - name: Сохранить jar как артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+
+      - name: Показать отчёт тестов (если упали)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test/
