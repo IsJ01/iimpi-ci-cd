@@ -29,7 +29,7 @@ public class CalcController {
     @GetMapping("/divide")
     public ResponseEntity<Integer> divide(@RequestParam int x, @RequestParam int y) {
         if (y == 0) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.ok(x / y);
     }
